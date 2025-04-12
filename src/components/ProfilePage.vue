@@ -28,13 +28,15 @@ export default{
             username: ''
         }
     },
-    created(){
-        if (localStorage.getItem('isAuth')){
-            this.isAuth = true
-            this.username = localStorage.getItem('username')
-        }
+    created() {
+        this.isAuth = Boolean(localStorage.getItem('isAuth'))
+        this.username = localStorage.getItem('username') || ''
     },
     methods:{
+        clearAuthData() {
+            ['isRegistered', 'isAuth', 'username', 'city', 'birthDate', 'credo', 'notes', 'messages', 'deleteBtn', 'emptyMessage']
+            .forEach(key => localStorage.removeItem(key))
+        },
         login() {
             if (this.username !== ""){
                 this.isAuth = true
@@ -58,16 +60,7 @@ export default{
             this.username = ''
             this.isRegistered = false
             this.notes = []
-            localStorage.removeItem('isRegistered')
-            localStorage.removeItem('isAuth')
-            localStorage.removeItem('username')
-            localStorage.removeItem('city')
-            localStorage.removeItem('birthDate')
-            localStorage.removeItem('credo')
-            localStorage.removeItem('notes')
-            localStorage.removeItem('messages')
-            localStorage.removeItem('deleteBtn')
-            localStorage.removeItem('emptyMessage')
+            this.clearAuthData()
         }
     },
     components:{

@@ -24,7 +24,6 @@
 </template>
 
 <script>
-
     export default{
         name: 'UserData',
         data(){
@@ -33,26 +32,30 @@
             }
         },
         created(){
-            if (localStorage.getItem('isRegistered')){
-                this.isRegistered = localStorage.getItem('isRegistered')
-                this.city = localStorage.getItem('city')
-                this.birthDate = localStorage.getItem('birthDate')
-                this.credo = localStorage.getItem('credo')
-                }
-            },
+            this.loadUserData()
+        },
         methods:{
-            send(){
-                if (this.city === undefined || this.birthDate === undefined || this.credo === undefined ){
-                    alert('Введите данные')
+            saveUserData() {
+                localStorage.setItem('isRegistered', true)
+                localStorage.setItem('city', this.city)
+                localStorage.setItem('birthDate', this.birthDate)
+                localStorage.setItem('credo', this.credo)
+            },
+            
+            loadUserData() {
+                this.isRegistered = localStorage.getItem('isRegistered') === 'true'
+                this.city = localStorage.getItem('city') || ''
+                this.birthDate = localStorage.getItem('birthDate') || ''
+                this.credo = localStorage.getItem('credo') || ''
+            },
+            send() {
+                if (!this.city.trim() || !this.birthDate.trim() || !this.credo.trim()) {
+                    alert('Все поля обязательны для заполнения')
+                    return
                 }
-                else{
-                    this.isRegistered = true
-
-                    localStorage.setItem('isRegistered', this.isRegistered)
-                    localStorage.setItem('city', this.city)
-                    localStorage.setItem('birthDate', this.birthDate)
-                    localStorage.setItem('credo', this.credo)
-                }
+                
+                this.isRegistered = true
+                this.saveUserData()
             },
             change(){
                 this.isRegistered = false

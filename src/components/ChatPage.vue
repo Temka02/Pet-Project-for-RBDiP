@@ -40,22 +40,10 @@
             }
         },
 
-        created(){
-            console.log(localStorage.getItem('emptyMessage'))
-            console.log(localStorage.getItem('deleteBtn'))
-            this.messages = JSON.parse(localStorage.getItem('messages'))
-            if (localStorage.getItem('emptyMessage') === 'true' && localStorage.getItem('deleteBtn') === 'false'){
-                this.emptyMessage = true
-                this.deleteBtn = false
-            }
-            if (localStorage.getItem('emptyMessage') === 'false' && localStorage.getItem('deleteBtn') === 'true'){
-                this.emptyMessage = false
-                this.deleteBtn = true
-            }
-            
-            
-            console.log(this.emptyMessage)
-            console.log(this.deleteBtn)
+        created() {
+            this.messages = JSON.parse(this.getLocalStorageItem('messages')) || []
+            this.emptyMessage = this.getLocalStorageItem('emptyMessage') === 'true'
+            this.deleteBtn = this.getLocalStorageItem('deleteBtn') === 'true'
         },
 
         computed(){
@@ -63,6 +51,14 @@
         },
 
         methods: {
+            getLocalStorageItem(key) {
+                return localStorage.getItem(key)
+            },
+
+            setLocalStorageItem(key, value) {
+                localStorage.setItem(key, value)
+            },
+
             sendMsg() {
                 this.messages = this.messages || []
 
@@ -71,34 +67,35 @@
                 }
 
                 if (this.newMsg !== ''){
-                    this.emptyMessage = false
-                    this.messages.push({id: new Date().getTime(), text: this.newMsg, user: this.username})
-                    console.log(this.messages)
+                    this.messages.push({
+                        id: new Date().getTime(), 
+                        text: this.newMsg, 
+                        user: this.username
+                    })
                     this.newMsg = ''
                     this.deleteBtn = true
-                    console.log(this.emptyMessage)
-                    console.log(this.deleteBtn)
+                    this.emptyMessage = false
                 }
 
                 else{
                     alert('Пожалуйста, введите сообщение')
                 }
-
-                localStorage.setItem('messages', JSON.stringify(this.messages))
-                localStorage.setItem('emptyMessage', false)
-                localStorage.setItem('deleteBtn', true)
+                
+                this.setLocalStorageItem('messages', JSON.stringify(this.messages))
+                this.setLocalStorageItem('emptyMessage', false)
+                this.setLocalStorageItem('deleteBtn', true)
             },
 
             delMsg(){
                 this.messages = []
-                alert('Все сообщения были удалены')
                 this.emptyMessage = true
                 this.deleteBtn = false
-                localStorage.setItem('messages', JSON.stringify(this.messages))
-                localStorage.setItem('emptyMessage', true)
-                localStorage.setItem('deleteBtn', false)
-                console.log(this.emptyMessage)
-                console.log(this.deleteBtn)
+
+                this.setLocalStorageItem('messages', JSON.stringify(this.messages))
+                this.setLocalStorageItem('emptyMessage', true)
+                this.setLocalStorageItem('deleteBtn', false)
+
+                alert('Все сообщения были удалены')
             }
         }
     }

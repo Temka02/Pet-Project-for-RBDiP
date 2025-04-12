@@ -19,7 +19,6 @@
 </template>
 
 <script>
-
     export default{
         name: 'LoadPosts',
         data(){
@@ -30,45 +29,48 @@
             };
         },
         mounted(){
-            const url = "https://free-nba.p.rapidapi.com/teams?page=0";
-            const options = {
-                method: "GET",
-                headers: {
-                "X-RapidAPI-Key": "488f437511msh2d3854838388c55p13692cjsn135921cfebdf",
-                "X-RapidAPI-Host": "free-nba.p.rapidapi.com",
-                },
-            };
-
-            fetch(url, options)
-                .then((res) => res.json())
-                .then((res)=> {
-                    this.posts = res.data;
-                    this.isLoad = false;
-
-                })
-                .catch(error => console.error(error)
-                )
-                console.log(this.posts)
-                console.log(this.isLoad)
-                
+            this.fetch_req() 
         },
         computed(){
             localStorage.setItem('username', this.$route.query.username)
         },
+        methods: {
+            async fetch_req(){
+                const url = "https://free-nba.p.rapidapi.com/teams?page=0";
+                const options = {
+                    method: "GET",
+                    headers: {
+                    "X-RapidAPI-Key": "488f437511msh2d3854838388c55p13692cjsn135921cfebdf",
+                    "X-RapidAPI-Host": "free-nba.p.rapidapi.com",
+                    },
+                };
+                try {
+                    const response = await fetch(url, options);
+                    const data = await response.json();
+                    
+                    if (data?.data) {
+                        this.posts = data.data;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                } finally {
+                    this.isLoad = false;
+                }
+            }
+        }
     }
-
 </script>
 
 <style scoped>
-    .loading{
-        margin: 14px;
-    }
-    .show{
-        margin: 14px;
-    }
-    #title{
-        margin-top: 30px;
-    }
+.loading{
+    margin: 14px;
+}
+.show{
+    margin: 14px;
+}
+#title{
+    margin-top: 30px;
+}
 </style>
 
 

@@ -31,18 +31,18 @@ export default{
             clearBtn: false
         }
     },
-    created(){
-        this.notes = JSON.parse(localStorage.getItem('notes'))
-        if (localStorage.getItem('emptyNotes') === 'false' && localStorage.getItem('clearBtn') === 'true'){
-            this.emptyNotes = false
-            this.clearBtn = true
-        }
-        else{
-            this.emptyNotes = true
-            this.clearBtn = false
-        }
+    created() {
+        this.notes = JSON.parse(localStorage.getItem('notes')) || []
+        this.emptyNotes = this.getLocalStorage('emptyNotes') !== 'true'
+        this.clearBtn = this.getLocalStorage('clearBtn') === 'true'
     },
     methods: {
+        getLocalStorage(key) {
+            return localStorage.getItem(key)
+        },
+        setLocalStorage(key, value) {
+            localStorage.setItem(key, value)
+        },
         add(){
             this.notes = this.notes || []
             if (this.newNote !== ''){
@@ -55,17 +55,16 @@ export default{
             }else{
                 alert('Пожалуйста, введите сообщение')
             }
-            localStorage.setItem('notes', JSON.stringify(this.notes))
-            localStorage.setItem('emptyNotes', false)
-            localStorage.setItem('clearBtn', true)
+            this.setLocalStorage('notes', JSON.stringify(this.notes))
+            this.setLocalStorage('emptyNotes', this.emptyNotes)
+            this.setLocalStorage('clearBtn', this.clearBtn)
         },
         clear(){
-            console.log(typeof this.notes)
             this.notes = []
             this.emptyNotes= true
             this.clearBtn = false
-            localStorage.setItem('clearBtn', false)
-            localStorage.setItem('emptyNotes', true)
+            this.setLocalStorage('clearBtn', false)
+            this.setLocalStorage('emptyNotes', true)
             alert('Список заметок был очищен')
         }
     }
